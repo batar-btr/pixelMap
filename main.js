@@ -12,6 +12,9 @@ function report(text) {
 function random(number) {
     return Math.floor(Math.random() * number)
 }
+function intRange(a, b) {
+    return a + random(b - a)
+}
 const clr = {
     rgb() {
         return `rgb(${random(255)},${random(255)},${random(255)})`
@@ -26,71 +29,7 @@ window.onload = function () {
     assert(true, 'The test suite is running')
     assert(false, 'fail')
 }
-report('Hello')
 
-
-let arr = [1, 4, 6, 2, 4, 6, 7, 4, 3, 1, 35, 3, 2, 4, 4, 2, 3, 6, 6, 5, 7, 8, 2, 3, 4, 5]
-
-console.log(arr.sort((a, b) => a - b))
-
-// function initCanvas(canvasId) {
-//     const canvas = document.getElementById(canvasId)
-//     let w = canvas.width = canvas.parentNode.offsetWidth;
-//     let h = canvas.height = canvas.parentNode.offsetHeight;
-//     const ctx = canvas.getContext('2d');
-
-//     class Particle {
-//         constructor(angle, x, y, color) {
-//             this.startX = x
-//             this.startY = y
-//             this.angle = angle
-//             this.x = x
-//             this.y = y
-//             this.color = color
-//         }
-//         update() {
-//             this.angle >= Math.PI * 2 ? this.angle = 0 : this.angle += 0.01;
-//             this.x = this.startX + Math.cos(this.angle) * 100;
-//             this.y = this.startY + Math.sin(this.angle) * 100;
-//         }
-//         draw() {
-//             // ctx.beginPath()
-//             // ctx.strokeStyle = '#202020'
-//             // ctx.lineWidth = 20;
-//             // ctx.arc(this.startX,this.startY, 100, 0, Math.PI * 2)
-//             // ctx.stroke()
-//             // ctx.closePath()
-//             ctx.beginPath()
-//             ctx.fillStyle = this.color;
-//             ctx.arc(this.x, this.y, 10, 0, Math.PI * 2, false)
-//             ctx.fill()
-//             ctx.closePath()
-//         }
-
-//     }
-
-//     const test = new Particle(0, w / 2, h / 2, 'green');
-//     const particles = new Array(1000).fill().map(a => new Particle(random(Math.PI * 2), random(w), random(h), clr.rgb()))
-//     console.log(particles)
-//     // test.draw(ctx)
-
-//     // console.log(w, h)
-
-//     function animate() {
-
-//         ctx.clearRect(0, 0, w, h);
-//         particles.forEach(particle => {
-//             particle.update()
-//             particle.draw()
-//         })
-//         // test.update();
-//         // test.draw();
-//         window.requestAnimationFrame(animate)
-//     }
-//     animate();
-// }
-
-// initCanvas('btrn')
 
 //======================JS LETTER CANVAS=================
 
@@ -112,10 +51,11 @@ function initCanvas(id) {
     }
     let metrics = getMetrics(9);
     opts = {
-        quantity: 20
+        quantity: 40
     }
     class Particle {
-        constructor(angle, x, y, color) {
+        constructor(angle, x, y,radius, color) {
+            this.radius = radius
             this.startX = x
             this.startY = y
             this.angle = angle
@@ -124,7 +64,7 @@ function initCanvas(id) {
             this.color = color
         }
         update() {
-            this.angle >= Math.PI * 2 ? this.angle = 0 : this.angle += 0.05;
+            this.angle >= Math.PI * 2 ? this.angle = 0 : this.angle += 0.1;
             this.x = this.startX + Math.cos(this.angle) * 5;
             this.y = this.startY + Math.sin(this.angle) * 5;
         }
@@ -137,7 +77,7 @@ function initCanvas(id) {
             // ctx.closePath()
             ctx.beginPath()
             ctx.fillStyle = this.color;
-            ctx.arc(this.x, this.y, 5, 0, Math.PI * 2, false)
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
             ctx.fill()
             ctx.closePath()
         }
@@ -151,15 +91,17 @@ function initCanvas(id) {
         let pixelY = +[a[1]];
         let x = metrics.rootX + pixelX * metrics.side
         let y = metrics.rootY + pixelY * metrics.side
-        let arr = new Array(opts.quantity).fill().map(particle => new Particle(random(Math.PI * 2), x + random(metrics.side), y + random(metrics.side), clr.rgb()))
+        let arr = new Array(opts.quantity)
+            .fill()
+            .map(particle => new Particle(random(Math.PI * 2), x + random(metrics.side), y + random(metrics.side),intRange(metrics.side*0.1 ,metrics.side*0.3), clr.rgbGray()))
         // let arr = new Array(opts.quantity).fill().map(particle => new Particle(random(Math.PI * 2), x + random(metrics.side), y + random(metrics.side), clr.rgbGray()))
         return arr
     })
     particles = [].concat(...particles)
     console.log(particles)
-
+         
     function animate() {
-        ctx.clearRect(0,0,w,h)
+        ctx.clearRect(0, 0, w, h)
         particles.forEach(a => {
             a.update()
             a.draw()
@@ -169,7 +111,7 @@ function initCanvas(id) {
     animate()
 
 
-    
+
 }
 initCanvas('btrn')
 //======================JS LETTER CANVAS=================
@@ -185,5 +127,3 @@ let grit = name => console.log(this)
 function sum(...rest) {
     return rest.reduce((a, b) => a + b, 0)
 }
-
-console.log(sum(...arr))
